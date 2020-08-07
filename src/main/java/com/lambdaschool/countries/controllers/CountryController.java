@@ -72,7 +72,7 @@ public class CountryController
             .iterator()
             .forEachRemaining(myList::add);
 
-        double totalPopulation = 0;
+        long totalPopulation = 0;
         for (Country c : myList)
         {
             totalPopulation = totalPopulation + c.getPopulation();
@@ -90,10 +90,32 @@ public class CountryController
             .iterator()
             .forEachRemaining(myList::add);
         myList.sort((c1, c2) -> (int)(c1.getPopulation() - c2.getPopulation()));
-        return new ResponseEntity<>(myList, HttpStatus.OK);
+        return new ResponseEntity<>(myList.get(0), HttpStatus.OK);
     }
 
     // http://localhost:2020/population/max
+    @GetMapping(value = "/population/max", produces = {"application/json"})
+    public ResponseEntity<?> listPopMax()
+    {
+        List<Country> myList = new ArrayList<>();
+        countryrepos.findAll()
+            .iterator()
+            .forEachRemaining(myList::add);
+        myList.sort((c1, c2) -> (int)(c1.getPopulation() - c2.getPopulation()));
+        return new ResponseEntity<>(myList.get(myList.size()-1), HttpStatus.OK);
+    }
 
     // STRETCH http://localhost:2020/population/median
+    @GetMapping(value = "/population/median", produces = {"application/json"})
+    public ResponseEntity<?> listMedianPop()
+    {
+        List<Country> myList = new ArrayList<>();
+        countryrepos.findAll()
+            .iterator()
+            .forEachRemaining(myList::add);
+        myList.sort((c1, c2) -> (int)(c1.getPopulation() - c2.getPopulation()));
+        System.out.println("The Median Population is " + myList.get((myList.size()-1)/2));
+        return new ResponseEntity<>(HttpStatus.OK);
+        // The Median Population is Country{countryid=101, name=Israel, population=8583916, landmasskm221640, medianage31}
+    }
 }
